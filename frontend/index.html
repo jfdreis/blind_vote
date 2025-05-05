@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Secret Voting - Initialize</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .wide-input {
+      width: 400px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    #voting-summary h2 {
+      margin-top: 0px;
+    }
+    body {
+    font-family: 'Arial', sans-serif;
+    background-color: #002fa7; /* Klein Blue */
+    color: white;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      color: white;
+    }
+
+    h2 {
+      text-align: center;
+      color: white;
+      margin-top: 20px;
+    }
+
+    /* Center container for form and buttons */
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin: 40px auto;
+      text-align: center;
+    }
+
+    /* Inputs and form styles */
+    input[type="text"], input[type="number"] {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+
+    /* Button styles */
+    button {
+      padding: 10px 20px;
+      background-color: white;
+      border: none;
+      color: white;
+      font-size: 1em;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin: 10px 0;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    /* Styling for voting options (Checkboxes) */
+    #checkboxes {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    label {
+      margin-left: 8px;
+      font-size: 1em;
+      display: block;
+    }
+
+    /* Result display */
+    #results-section {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #results-output {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin: 20px auto;
+      width: 80%;
+      max-width: 500px;
+    }
+
+    /* Chart styling */
+    #resultsChart {
+      width: 100%;
+      height: 300px;
+      margin-top: 20px;
+    }
+
+    /* Centered message */
+    .centered-message {
+      font-size: 1.2em;
+      color: #555;
+    }
+
+    /* Voting container */
+    #voting-section {
+      padding: 20px;
+      margin-bottom: 20px;
+      background-color: #f2f2f2;
+      border-radius: 8px;
+    }
+
+    /* Voting page heading */
+    #voting-section h1 {
+      font-size: 1.8em;
+      color: #333;
+    }
+
+    /* Space between sections */
+    .section {
+      margin-top: 30px;
+    }
+
+    /* Copy message styling */
+    #copy-message {
+      margin-left: 10px;
+      color: green;
+      font-size: 0.9em;
+    }
+    /* Styling for Voting Summary */
+    #voting-summary {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    #voting-summary h2 {
+      font-size: 1.5em;
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    #voting-summary ul {
+      list-style-type: disc;
+      list-style-position: inside;
+      margin-left: 0;
+      padding-left: 0;
+      font-size: 1.1em;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .button-row > * {
+      flex: 1;
+    }
+    .button-row button {
+      width: 100%;
+    }
+    .container {
+      background-color: rgba(255, 255, 255, 0.05); /* semi-transparent container */
+      color: white;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      background-color: #ffffff10; /* translucent white */
+      color: white;
+      border: 1px solid #ffffff50;
+    }
+
+    input::placeholder {
+      color: #ccc;
+    }
+
+    button {
+      background-color: #ffffff20;
+      color: white;
+      border: 1px solid #ffffff50;
+    }
+
+    button:hover {
+      background-color: #ffffff30;
+    }
+
+    #results-output,
+    #copy-message,
+    #voting-summary {
+      color: white;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Voting Manager</h1>
+
+    <div id="voting-setup">
+      <p>What is your vote about?</p>
+      <input id="voting-title" class="wide-input" type="text" placeholder="E.g. What is your favourite drink?"><br><br>
+
+      <p>How many options are there?</p>
+      <input id="slots" class="wide-input" placeholder="Enter number of options (e.g., 3)" type="number" min="1"><br><br>
+
+      <button onclick="handleInitialize()" id="initialize-button">Start Setup</button><br><br>
+    </div>
+
+    <div id="slot-inputs" style="display:none;">
+      <div id="slot-names"></div>
+    </div>
+
+    <!-- Restart Setup button (hidden initially) -->
+    <!-- <button id="restart-initialization-button" style="display: none;" onclick="restartInitialization()">Restart Setup</button><br><br> -->
+
+    <pre id="output"></pre>
+
+    <div id="voting-link-container" style="display: none;">
+      <div class="button-row">
+        <div><button onclick="copyVotingLink()">Copy Voting Link</button></div>
+        <div><a href="#" id="voting-link" target="_blank"><button>Open Voting Page</button></a></div>
+      </div>
+      <br><br>
+
+      <!-- Confirmation message -->
+      <span id="copy-message" style="margin-left: 10px; color: green; display: none;">Copied!</span>
+
+      <!-- Live vote count-->
+      <p id="vote-counter" style="margin-top: 10px;"><strong>Total Votes:</strong> 0</p>
+    
+      <!-- End Voting button -->
+      <button onclick="finishVoting()">End Voting</button>
+
+      <!-- Message shown after voting ends-->
+      <p id="voting-over-message" style="display: none; color: red; margin-top: 10px;">Voting has ended. You can now view the results.</p>
+
+      <!-- Display results here -->
+      <pre id="results-output" style="margin-top: 10px; background: rgba(255, 255, 255, 0.05); padding: 10px;"></pre>
+
+      <!-- Chart for results -->
+      <canvas id="resultsChart"></canvas>
+    </div>
+  </div>
+
+  <script>
+    const api = "http://localhost:5000";
+    let votingPageUrl = ""; // Global variable to store generated voting URL
+    let sessionId = ""; // Store session ID for vote count polling
+    let votePollInterval = null;
+    let votingFinished = false; // Flag to track if voting is finished
+
+    function handleInitialize() {
+      const question = document.getElementById("voting-title").value.trim();
+      const slotCount = parseInt(document.getElementById("slots").value);
+
+      if (!question) {
+        alert("Please enter a question for the vote.");
+        return;
+      }
+        // Check if the slot count is invalid or less than 1
+      if (isNaN(slotCount) || slotCount < 1) {
+        alert("Please enter a valid number of options (at least 1)..");
+        return;
+      }
+
+      // Hide initial setup and show slot inputs
+      document.getElementById("voting-setup").style.display = "none";
+      document.getElementById("slot-inputs").style.display = "block";
+
+      // Show the question as a heading
+      const votingSection = document.getElementById("slot-names");
+      votingSection.innerHTML = `<h3>${question}</h3><p>Enter the names of the voting options:</p>`;
+
+      // Create input fields for each option
+      for (let i = 0; i < slotCount; i++) {
+        const input = document.createElement("input");
+        input.type = "text";
+        input.placeholder = `Option ${i + 1}`;
+        input.id = `slot-name-${i}`;
+        votingSection.appendChild(input);
+        votingSection.appendChild(document.createElement("br"));
+      }
+
+      // Show the Restart Initialization button after initialization
+      // document.getElementById("restart-initialization-button").style.display = "inline-block";
+
+
+      // Confirm button
+      const buttonRow = document.createElement("div");
+      buttonRow.className = "button-row";
+
+      const confirmButton = document.createElement("button");
+      confirmButton.innerText = "Confirm Options";
+      confirmButton.onclick = () => {
+        const slotNames = [];
+        for (let i = 0; i < slotCount; i++) {
+          const value = document.getElementById(`slot-name-${i}`).value.trim();
+          slotNames.push(value || `Option ${i + 1}`);
+        }
+
+        fetch(`${api}/init`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question: question, slots: slotCount, slot_names: slotNames }) 
+        })
+        .then(res => res.json())
+        .then(data => {
+          // Hide slot inputs and restart button
+          document.getElementById("slot-inputs").style.display = "none";
+
+          // Prepare a summary section before the voting link
+          const summary = document.createElement("div");
+          summary.id = "voting-summary";  // Add this line
+          summary.innerHTML = `
+            <h2>Voting Setup Complete</h2>
+            <p><strong>Question:</strong> ${question}</p>
+            <p><strong>Options:</strong></p>
+            <ul>${slotNames.map(name => `<li>${name}</li>`).join("")}</ul>`;
+            
+          const container = document.querySelector('.container');
+          container.insertBefore(
+            summary,
+            document.getElementById("voting-link-container")
+          );
+          // Display voting link section
+          sessionId = data.session_id;
+          votingPageUrl = `${api}/vote/${data.session_id}`;
+          document.getElementById("voting-link").href = votingPageUrl;
+          document.getElementById("voting-link-container").style.display = 'block';
+          startVoteCountPolling();
+        });
+      };
+      const restartButton = document.createElement("button");
+      restartButton.innerText = "Restart Setup";
+      restartButton.onclick = restartInitialization;
+
+      buttonRow.appendChild(confirmButton);
+      buttonRow.appendChild(restartButton);
+
+      votingSection.appendChild(document.createElement("br"));
+      votingSection.appendChild(buttonRow);
+    }
+
+    // Function to restart the initialization process
+    function restartInitialization() {
+      // Reset the displayed content and hide slot inputs
+      document.getElementById("voting-setup").style.display = "block";
+      document.getElementById("slot-inputs").style.display = "none";
+      document.getElementById("voting-link-container").style.display = "none";
+      document.getElementById("restart-initialization-button").style.display = "none"; // Hide Restart Initialization button
+
+      // Clear any existing values
+      document.getElementById("voting-title").value = "";
+      document.getElementById("slots").value = "";
+      document.getElementById("output").innerText = "";
+    }
+
+    // Poll vote count every 5 seconds
+    function startVoteCountPolling() {
+      if (votePollInterval) clearInterval(votePollInterval);
+
+      votePollInterval = setInterval(() => {
+        if (!sessionId) return;
+
+        fetch(`${api}/vote-count/${sessionId}`)
+          .then(res => res.json())
+          .then(data => {
+            document.getElementById("vote-counter").innerHTML = `<strong>Total Votes:</strong> ${data.total_votes}`;
+          })
+          .catch(err => {
+            console.error("Failed to fetch vote count", err);
+          });
+      }, 5000);
+    }
+
+    function copyVotingLink() {
+      if (!votingPageUrl) return;
+
+      navigator.clipboard.writeText(votingPageUrl).then(() => {
+        const msg = document.getElementById("copy-message");
+        msg.style.display = "inline";
+
+        // Hide the message after 2 seconds
+        setTimeout(() => {
+          msg.style.display = "none";
+        }, 2000);
+      }).catch(err => {
+        alert("Failed to copy the link.");
+        console.error("Copy failed: ", err);
+      });
+    }
+        
+    // Finish Voting functionality
+    function finishVoting() {
+      if (!sessionId) return;
+      votingFinished = true;
+
+      // Hide the Finish Voting button
+      document.querySelector("button[onclick='finishVoting()']").style.display = "none";
+
+      // Show the Get Results button
+      // document.getElementById("get-results-btn").style.display = "inline-block";
+
+      // Disable voting on the voting page
+      fetch(`${api}/vote-finish/${sessionId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log("Voting finished:", data.message);
+        if (votePollInterval) {
+          clearInterval(votePollInterval);
+        }
+
+        // Show message that voting is over
+        const msg = document.createElement("p");
+        msg.innerText = "Voting is over. You can now view the results.";
+        msg.style.color = "red";
+        msg.style.marginTop = "10px";
+        document.getElementById("voting-over-message").style.display = "inline"; // Show message
+
+        // Fetch and display results immediately after voting finishes
+        getResults(); // Get and display the results
+      })
+      .catch(error => {
+        console.error("Error finishing voting:", error);
+      });
+    }
+
+    let chartInstance = null; // Track chart instance globally
+    // Fetch and display voting results
+    function getResults() {
+      if (!sessionId) return;
+
+      fetch(`${api}/results/${sessionId}`)
+        .then(res => res.json())
+        .then(data => {
+          const resultsDisplay = Object.entries(data)
+            .map(([option, votes]) => `${option}: ${votes} votes`)
+            .join("\n");
+
+          document.getElementById("results-output").innerText = resultsDisplay;
+
+          // Draw chart
+          const labels = Object.keys(data);
+          const values = Object.values(data);
+          const ctx = document.getElementById("resultsChart").getContext("2d");
+
+          // Destroy old chart if it exists
+          if (chartInstance) chartInstance.destroy();
+
+          // Create new bar chart
+          chartInstance = new Chart(ctx, {
+            type: "bar",
+            data: {
+              labels: labels,
+              datasets: [{
+                label: "# of Votes",
+                data: values,
+                backgroundColor: "rgba(75, 192, 192, 0.6)",
+                borderColor: "rgba(75, 192, 192, 1)",
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  precision: 0,
+                  stepSize: 1
+                }
+              }
+            }
+          });
+        })
+        .catch(err => {
+          console.error("Failed to fetch results", err);
+          document.getElementById("results-output").innerText = "Failed to fetch results.";
+        });
+    }
+  </script>
+</body>
+</html>

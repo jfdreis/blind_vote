@@ -1,0 +1,37 @@
+[project]
+name = "nilrag"
+version = "0.1.11"
+description = "nilRAG SDK"
+authors = [
+    { name = "Manuel Santos", email = "manuel.santos@nillion.com" },
+    { name = "Dimitris Mouris", email = "dimitris@nillion.com" },
+    { name = "Georgios Pentafragkas", email = "georgios.pentafragkas@nillion.com" }
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "aiohttp>=3.11.14",
+    "ecdsa>=0.19.0",
+    "faker>=37.0.0",
+    "nilql==0.0.0a12",
+    "numpy<2.0.0",
+    "PyJWT[crypto]~=2.10.1",
+    "sentence-transformers>=3.3.1",
+]
+
+[dependency-groups]
+dev = [
+    "black>=24.10.0",
+    "isort>=5.13.2",
+    "pylint>=3.3.3",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["nilrag*"]
+
+[build-system]
+requires = [
+    "setuptools>=68.0"
+]
+build-backend = "setuptools.build_meta"

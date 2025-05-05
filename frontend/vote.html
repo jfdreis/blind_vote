@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title id="dynamic-title">Loading...</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    .wide-input {
+      width: 400px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    #voting-summary h2 {
+      margin-top: 0px;
+    }
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #002fa7; /* Klein Blue */
+      color: white;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2em;
+      color: white;
+    }
+
+    h2 {
+      text-align: center;
+      color: white;
+      margin-top: 20px;
+    }
+
+    /* Center container for form and buttons */
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin: 40px auto;
+      text-align: center;
+    }
+
+    /* Inputs and form styles */
+    input[type="text"], input[type="number"] {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+
+    /* Button styles */
+    button {
+      padding: 10px 20px;
+      background-color: white;
+      border: none;
+      color: white;
+      font-size: 1em;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin: 10px 0;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    /* Styling for voting options (Checkboxes) */
+    #checkboxes {
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    label {
+      margin-left: 8px;
+      font-size: 1em;
+      display: block;
+    }
+
+    /* Result display */
+    #results-section {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #results-output {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin: 20px auto;
+      width: 80%;
+      max-width: 500px;
+    }
+
+    /* Chart styling */
+    #resultsChart {
+      width: 100%;
+      height: 300px;
+      margin-top: 20px;
+    }
+
+    /* Centered message */
+    .centered-message {
+      font-size: 1.2em;
+      color: #555;
+    }
+
+    /* Voting container */
+    #voting-section {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      color: white;
+    }
+
+
+    /* Voting page heading */
+    #voting-section h1 {
+      font-size: 1.8em;
+      color: #333;
+    }
+
+    /* Space between sections */
+    .section {
+      margin-top: 30px;
+    }
+
+    /* Copy message styling */
+    #copy-message {
+      margin-left: 10px;
+      color: green;
+      font-size: 0.9em;
+    }
+    /* Styling for Voting Summary */
+    #voting-summary {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    #voting-summary h2 {
+      font-size: 1.5em;
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    #voting-summary ul {
+      list-style-type: disc;
+      list-style-position: inside;
+      margin-left: 0;
+      padding-left: 0;
+      font-size: 1.1em;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .button-row > * {
+      flex: 1;
+    }
+    .button-row button {
+      width: 100%;
+    }
+    .container {
+      background-color: rgba(255, 255, 255, 0.05); /* semi-transparent container */
+      color: white;
+    }
+
+    input[type="text"],
+    input[type="number"] {
+      background-color: #ffffff10; /* translucent white */
+      color: white;
+      border: 1px solid #ffffff50;
+    }
+
+    input::placeholder {
+      color: #ccc;
+    }
+
+    button {
+      background-color: #ffffff20;
+      color: white;
+      border: 1px solid #ffffff50;
+    }
+
+    button:hover {
+      background-color: #ffffff30;
+    }
+
+    #results-output,
+    #copy-message,
+    #voting-summary {
+      color: white;
+    }
+    /* Update Results Section to blend with dark theme */
+    #results-section {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    /* Results Output Styling with List Style */
+    #results-output {
+      background-color: rgba(255, 255, 255, 0.05); /* Slightly transparent white */
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin: 20px auto;
+      width: 80%;
+      max-width: 500px;
+      color: white; /* Ensure text is visible */
+    }
+
+    /* Adding the list style for result items */
+    #results-output ul {
+      list-style-type: disc;
+      list-style-position: inside;
+      margin-left: 0;
+      padding-left: 0;
+      font-size: 1.1em;
+      color: white; /* Ensure the list text is visible */
+    }
+
+    /* Chart Styling */
+    #resultsChart {
+      width: 100%;
+      height: 300px;
+      margin-top: 20px;
+      background-color: rgba(255, 255, 255, 0.05); /* Semi-transparent white background for the chart */
+    }
+
+    /* Voting section background */
+    #voting-section {
+      padding: 20px;
+      margin-bottom: 20px;
+      background-color: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      color: white;
+    }
+
+    /* Copy message and voting summary backgrounds */
+    #copy-message {
+      margin-left: 10px;
+      color: green;
+      font-size: 0.9em;
+    }
+
+    #voting-summary {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    /* General styling for white text areas */
+    #voting-summary h2,
+    #results-output {
+      color: white;
+    }
+
+    /* Button Styling */
+    button {
+      background-color: #ffffff20;
+      color: white;
+      border: 1px solid #ffffff50;
+    }
+
+    button:hover {
+      background-color: #ffffff30;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Cast Your Vote</h1>
+    
+    <div id="voting-section">
+      <input id="voter" class="wide-input" placeholder="Enter Your Voter ID"><br><br>
+
+      <div id="checkboxes"></div><br>
+
+      <button onclick="submitVote()">Submit Your Vote</button><br><br>
+    </div>
+    <pre id="output"></pre>
+    
+    <!-- Results Section (Initially hidden) -->
+    <div id="results-section" style="display: none;">
+      <h1>Voting has ended. Here are the results:</h1>
+      
+      <div id="results-output" style="background: #f9f9f9; padding: 10px;"></div>
+
+      <canvas id="resultsChart" width="400" height="200"></canvas>
+    </div>
+
+  <script>
+    const api = "http://localhost:5000";
+    let sessionId = window.location.pathname.split("/")[2]; // Extract session ID from URL
+    let chartInstance = null;
+    let votingOpen = true;  // Track voting status from backend
+    let votePollInterval = null; // Track the interval globally
+
+    function loadQuestion() {
+      fetch(`${api}/vote-question/${sessionId}`)
+        .then(res => res.json())
+        .then(data => {
+          const question = data.question || "Anonymous Voting";
+          document.title = question; // Set browser tab title
+          const h1 = document.querySelector("h1");
+          if (h1) h1.innerText = question; // Update main page heading too
+        })
+        .catch(err => {
+          console.error("Failed to fetch voting question", err);
+        });
+    }
+
+    // Load voting options (checkboxes for options)
+    function loadVotingOptions() {
+      fetch(`${api}/vote-options/${sessionId}`)
+        .then(res => res.json())
+        .then(data => {
+          const namesContainer = document.getElementById("checkboxes");
+          namesContainer.innerHTML = "";
+          
+          data.slot_names.forEach((name, index) => {
+            const label = document.createElement("label");
+            label.innerText = name;
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.name = "slot";
+            checkbox.value = index;
+            checkbox.disabled = !votingOpen; //Disable if voting closed
+            checkbox.addEventListener("change", (e) => {
+              if (e.target.checked) {
+                document.querySelectorAll('input[name="slot"]').forEach(cb => {
+                  if (cb !== e.target) cb.checked = false;
+                });
+              }
+            });
+            namesContainer.appendChild(checkbox);
+            namesContainer.appendChild(label);
+            namesContainer.appendChild(document.createElement("br"));
+          });
+        });
+    }
+
+    // Check the voting status
+    function checkVotingStatus() {
+      fetch(`${api}/voting-status/${sessionId}`)
+        .then(res => {
+          if (!res.ok && res.status !== 404) {
+            throw new Error(`Unexpected response: ${res.status}`);
+          }
+          return res.json();
+        })
+        .then(data => {
+          if (data && data.voting_open === false) {
+            votingOpen = false;
+
+            if (votePollInterval) {
+              clearInterval(votePollInterval);
+            }
+
+            const output = document.getElementById("output");
+            output.innerText = data.message || "Voting is closed ended. Submission are no longer accepted.";
+            output.style.color = "red";
+
+            document.querySelectorAll('input[name="slot"]').forEach(cb => cb.disabled = true);
+            document.querySelector('button[onclick="submitVote()"]').disabled = true;
+            document.getElementById("voter").disabled = true;
+
+            document.getElementById('voting-section').style.display = 'none';
+            document.getElementById('results-section').style.display = 'block';
+
+            getResults();
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching voting status:", error);
+        });
+    }
+
+
+    // Poll voting status every 5 seconds
+    function startVotingStatusPolling() {
+      votePollInterval = setInterval(() => {
+        checkVotingStatus();
+      }, 5000); // check every 5 seconds
+    }
+
+    // Submit vote function
+    function submitVote() {
+      if (!votingOpen) {
+        const output = document.getElementById("output");
+        output.innerText = "Voting is closed ended. You can no longer submit a vote.";
+        output.style.color = "red";
+        return;
+      }
+      const voter = document.getElementById("voter").value;
+        const checkboxes = document.querySelectorAll('input[name="slot"]');
+        const choices = [];
+
+        checkboxes.forEach(cb => choices.push(cb.checked ? "1" : "0"));
+
+        if (!choices.includes("1")) {
+          document.getElementById("output").innerText = "Please choose an option before submitting.";
+        return;
+      }
+
+        const voteChoice = choices.join(",");
+
+        fetch(`${api}/vote/${sessionId}`, {
+        method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ voter_id: voter, choice: voteChoice })
+        })
+        .then(async res => {
+          const data = await res.json();
+          if (!res.ok) {
+            document.getElementById("output").innerText = data.message || "An error occurred while submitting your vote.";
+          } else {
+            document.getElementById("output").innerText = data.message;
+          }
+        })
+        .catch(error => {
+          document.getElementById("output").innerText = "A network error occurred. Please try again.";
+        });
+    }
+
+      // Fetch and display results
+    function getResults() {
+        fetch(`${api}/results/${sessionId}`)
+        .then(res => res.json())
+        .then(data => {
+            // Display results as text
+            const labels = Object.keys(data);
+            const values = Object.values(data);
+            
+            const resultsText = labels.map((label, index) => `${label}: ${values[index]} votes`).join("\n");
+            document.getElementById("results-output").innerText = resultsText;
+
+            // Update the chart
+            const ctx = document.getElementById("resultsChart").getContext("2d");
+
+            // Destroy old chart if it exists
+          if (chartInstance) {
+              chartInstance.destroy(); 
+          }
+
+            // Create a new bar chart
+          chartInstance = new Chart(ctx, {
+              type: "bar",
+            data: {
+                labels: labels, // Use the keys (slot names) as labels
+              datasets: [{
+                  label: "Number of Votes", // The label for the chart
+                  data: values, // Use the values (vote counts) as data
+                  backgroundColor: "rgba(54, 162, 235, 0.6)",
+                  borderColor: "rgba(54, 162, 235, 1)",
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                  y: {
+                    beginAtZero: true, // Ensure the y-axis starts at 0
+                    precision: 0 // Remove decimal precision
+                  }
+              }
+            }
+          });
+        });
+    }
+
+      window.onload = () => {
+      loadQuestion();
+      loadVotingOptions();
+      checkVotingStatus();
+        startVotingStatusPolling(); // Start polling for updates
+    };
+  </script>
+  </div>
+</body>
+</html>
