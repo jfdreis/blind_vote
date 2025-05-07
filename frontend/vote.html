@@ -3,16 +3,7 @@
 <head>
   <title id="dynamic-title">Loading...</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <style>
-    .wide-input {
-      width: 400px;
-      overflow-x: auto;
-      white-space: nowrap;
-    }
-    #voting-summary h2 {
-      margin-top: 0px;
-    }
     body {
       font-family: 'Arial', sans-serif;
       background-color: #002fa7; /* Klein Blue */
@@ -21,47 +12,57 @@
       padding: 0;
       min-height: 100vh;
     }
-
-    h1 {
-      text-align: center;
-      font-size: 2em;
-      color: white;
-    }
-
-    h2 {
+  
+    h1, h2 {
       text-align: center;
       color: white;
       margin-top: 20px;
     }
-
-    /* Center container for form and buttons */
+  
+    h2 {
+      margin-top: 0;
+    }
+  
+    .wide-input {
+      width: 400px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+  
     .container {
       width: 100%;
       max-width: 600px;
-      background-color: #fff;
+      background-color: rgba(255, 255, 255, 0.05); /* semi-transparent */
+      color: white;
       padding: 20px;
       border-radius: 8px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
       margin: 40px auto;
       text-align: center;
     }
-
-    /* Inputs and form styles */
-    input[type="text"], input[type="number"] {
+  
+    input[type="text"],
+    input[type="number"] {
       width: 90%;
       padding: 10px;
       margin: 10px 0;
-      border: 1px solid #ccc;
+      border: 1px solid #ffffff50;
       border-radius: 4px;
       font-size: 1em;
       box-sizing: border-box;
+      background-color: #ffffff10;
+      color: white;
     }
-
-    /* Button styles */
+  
+    input::placeholder {
+      color: #ccc;
+    }
+  
     button {
+      width: 100%;
       padding: 10px 20px;
-      background-color: white;
-      border: none;
+      background-color: #ffffff20;
+      border: 1px solid #ffffff50;
       color: white;
       font-size: 1em;
       border-radius: 4px;
@@ -69,109 +70,16 @@
       transition: background-color 0.3s ease;
       margin: 10px 0;
     }
-
+  
     button:hover {
-      background-color: #45a049;
+      background-color: #ffffff30;
     }
-
+  
     button:disabled {
       background-color: #ccc;
       cursor: not-allowed;
     }
-
-    /* Styling for voting options (Checkboxes) */
-    #checkboxes {
-      text-align: left;
-      margin-bottom: 20px;
-    }
-
-    label {
-      margin-left: 8px;
-      font-size: 1em;
-      display: block;
-    }
-
-    /* Result display */
-    #results-section {
-      display: none;
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    #results-output {
-      background-color: rgba(255, 255, 255, 0.05);
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      margin: 20px auto;
-      width: 80%;
-      max-width: 500px;
-    }
-
-    /* Chart styling */
-    #resultsChart {
-      width: 100%;
-      height: 300px;
-      margin-top: 20px;
-    }
-
-    /* Centered message */
-    .centered-message {
-      font-size: 1.2em;
-      color: #555;
-    }
-
-    /* Voting container */
-    #voting-section {
-      background-color: rgba(255, 255, 255, 0.05);
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
-      color: white;
-    }
-
-
-    /* Voting page heading */
-    #voting-section h1 {
-      font-size: 1.8em;
-      color: #333;
-    }
-
-    /* Space between sections */
-    .section {
-      margin-top: 30px;
-    }
-
-    /* Copy message styling */
-    #copy-message {
-      margin-left: 10px;
-      color: green;
-      font-size: 0.9em;
-    }
-    /* Styling for Voting Summary */
-    #voting-summary {
-      background-color: rgba(255, 255, 255, 0.05);
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
-    }
-
-    #voting-summary h2 {
-      font-size: 1.5em;
-      color: white;
-      margin-bottom: 10px;
-    }
-
-    #voting-summary ul {
-      list-style-type: disc;
-      list-style-position: inside;
-      margin-left: 0;
-      padding-left: 0;
-      font-size: 1.1em;
-    }
-
+  
     .button-row {
       display: flex;
       gap: 10px;
@@ -179,132 +87,101 @@
       flex-wrap: wrap;
       margin-top: 10px;
     }
+  
     .button-row > * {
       flex: 1;
     }
-    .button-row button {
-      width: 100%;
+  
+    #checkboxes {
+      text-align: left;
+      margin-bottom: 20px;
     }
-    .container {
-      background-color: rgba(255, 255, 255, 0.05); /* semi-transparent container */
-      color: white;
+  
+    label {
+      display: block;
+      margin-left: 8px;
+      font-size: 1em;
     }
-
-    input[type="text"],
-    input[type="number"] {
-      background-color: #ffffff10; /* translucent white */
-      color: white;
-      border: 1px solid #ffffff50;
+  
+    .section {
+      margin-top: 30px;
     }
-
-    input::placeholder {
-      color: #ccc;
+  
+    .centered-message {
+      font-size: 1.2em;
+      color: #555;
     }
-
-    button {
-      background-color: #ffffff20;
-      color: white;
-      border: 1px solid #ffffff50;
-    }
-
-    button:hover {
-      background-color: #ffffff30;
-    }
-
-    #results-output,
-    #copy-message,
-    #voting-summary {
-      color: white;
-    }
-    /* Update Results Section to blend with dark theme */
+  
+    #voting-section,
+    #voting-summary,
     #results-section {
-      display: none;
-      text-align: center;
-      margin-top: 20px;
       background-color: rgba(255, 255, 255, 0.05);
       padding: 20px;
       border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      color: white;
     }
-
-    /* Results Output Styling with List Style */
+  
+    #voting-section h1 {
+      font-size: 1.8em;
+      color: #fff;
+    }
+  
+    #voting-summary h2,
     #results-output {
-      background-color: rgba(255, 255, 255, 0.05); /* Slightly transparent white */
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      margin: 20px auto;
-      width: 80%;
-      max-width: 500px;
-      color: white; /* Ensure text is visible */
+      color: white;
     }
-
-    /* Adding the list style for result items */
+  
+    #voting-summary h2 {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+    }
+  
+    #voting-summary ul,
     #results-output ul {
       list-style-type: disc;
       list-style-position: inside;
       margin-left: 0;
       padding-left: 0;
       font-size: 1.1em;
-      color: white; /* Ensure the list text is visible */
+      color: white;
     }
-
-    /* Chart Styling */
+  
+    #results-section {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+    }
+  
+    #results-output {
+      background-color: rgba(255, 255, 255, 0.05);
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin: 20px auto;
+      width: 80%;
+      max-width: 500px;
+    }
+  
     #resultsChart {
       width: 100%;
       height: 300px;
       margin-top: 20px;
-      background-color: rgba(255, 255, 255, 0.05); /* Semi-transparent white background for the chart */
     }
-
-    /* Voting section background */
-    #voting-section {
-      padding: 20px;
-      margin-bottom: 20px;
-      background-color: rgba(255, 255, 255, 0.05);
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      color: white;
-    }
-
-    /* Copy message and voting summary backgrounds */
+  
     #copy-message {
       margin-left: 10px;
       color: green;
       font-size: 0.9em;
-    }
-
-    #voting-summary {
-      background-color: rgba(255, 255, 255, 0.05);
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
-    }
-
-    /* General styling for white text areas */
-    #voting-summary h2,
-    #results-output {
-      color: white;
-    }
-
-    /* Button Styling */
-    button {
-      background-color: #ffffff20;
-      color: white;
-      border: 1px solid #ffffff50;
-    }
-
-    button:hover {
-      background-color: #ffffff30;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Cast Your Vote</h1>
-    
     <div id="voting-section">
-      <input id="voter" class="wide-input" placeholder="Enter Your Voter ID"><br><br>
+      <input id="voter" class="wide-input" type="text" placeholder="Enter Your Voter ID"><br><br>
 
       <div id="checkboxes"></div><br>
 
@@ -314,9 +191,9 @@
     
     <!-- Results Section (Initially hidden) -->
     <div id="results-section" style="display: none;">
-      <h1>Voting has ended. Here are the results:</h1>
+      <h2>Voting has ended. Here are the results:</h2>
       
-      <div id="results-output" style="background: #f9f9f9; padding: 10px;"></div>
+      <div id="results-output"></div>
 
       <canvas id="resultsChart" width="400" height="200"></canvas>
     </div>
@@ -352,7 +229,6 @@
           
           data.slot_names.forEach((name, index) => {
             const label = document.createElement("label");
-            label.innerText = name;
 
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
@@ -366,9 +242,11 @@
                 });
               }
             });
-            namesContainer.appendChild(checkbox);
+            // Append checkbox and text to the label
+            label.appendChild(checkbox);
+            label.append(` ${name}`);  // adds the name as text node after checkbox
+
             namesContainer.appendChild(label);
-            namesContainer.appendChild(document.createElement("br"));
           });
         });
     }
@@ -389,10 +267,6 @@
             if (votePollInterval) {
               clearInterval(votePollInterval);
             }
-
-            const output = document.getElementById("output");
-            output.innerText = data.message || "Voting is closed ended. Submission are no longer accepted.";
-            output.style.color = "red";
 
             document.querySelectorAll('input[name="slot"]').forEach(cb => cb.disabled = true);
             document.querySelector('button[onclick="submitVote()"]').disabled = true;
@@ -447,7 +321,7 @@
           const data = await res.json();
           if (!res.ok) {
             document.getElementById("output").innerText = data.message || "An error occurred while submitting your vote.";
-          } else {
+          } else if (votingOpen) {
             document.getElementById("output").innerText = data.message;
           }
         })
@@ -505,7 +379,7 @@
       loadQuestion();
       loadVotingOptions();
       checkVotingStatus();
-        startVotingStatusPolling(); // Start polling for updates
+      startVotingStatusPolling(); // Start polling for updates
     };
   </script>
   </div>

@@ -40,7 +40,7 @@ def init():
     session_id = str(uuid.uuid4())
 
     # Initialize the schema and generate the config file
-    config_path = "examples/nildb_config_voting.json"  # Ensure this matches your expected config path
+    config_path = "examples/bvote_config_voting.json"  # Ensure this matches your expected config path
     message = run_init_schema(slots=slots, config_path=config_path)
 
     # Store session data (slot names and initial votes)
@@ -70,7 +70,7 @@ def vote(session_id):
     vote_choice = data["choice"]
 
     try:
-        message = run_upload_vote(voter_id, vote_choice, config_path="examples/nildb_config_voting.json")
+        message = run_upload_vote(voter_id, vote_choice, config_path="examples/bvote_config_voting.json")
         return jsonify(message=message)
 
     except ValueError as e:
@@ -108,7 +108,7 @@ def get_results(session_id):
         with open(f"examples/slot_names_{session_id}.txt") as f:
             slot_names = [line.strip() for line in f]
 
-        result_vector = run_get_results(config_path="examples/nildb_config_voting.json")
+        result_vector = run_get_results(config_path="examples/bvote_config_voting.json")
         results_named = dict(zip(slot_names, result_vector))
         return jsonify(results_named)
     except Exception as e:
@@ -122,7 +122,7 @@ def vote_count(session_id):
         return jsonify(message="Session not found."), 404
 
     try:
-        result_vector = run_get_results(config_path="examples/nildb_config_voting.json")
+        result_vector = run_get_results(config_path="examples/bvote_config_voting.json")
         total_votes = sum(result_vector)
         return jsonify(total_votes=total_votes)
     except Exception as e:
@@ -145,7 +145,7 @@ def voting_status(session_id):
     if not session:
         return jsonify(message="Session not found."), 404
     if not session.get("voting_open", True):
-        return jsonify(voting_open=False, message="Voting is closed."), 200
+        return jsonify(voting_open=False), 200
     return jsonify(voting_open=True, message="Voting is open."), 200
 
 
