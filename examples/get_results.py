@@ -72,7 +72,7 @@ async def _get_results_logic(config_path: str):
         decrypted_vote = decrypt_float_list(additive_key, vote_shares)
         decrypted_vote = [int(round(v)) for v in decrypted_vote]
         reconstructed_votes.append(decrypted_vote)
-        print(f"Reconstructed vote {vote_id}: {decrypted_vote}")
+        # print(f"Reconstructed vote {vote_id}: {decrypted_vote}")
 
     if reconstructed_votes:
         result = [0] * len(reconstructed_votes[0])
