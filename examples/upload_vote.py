@@ -46,8 +46,8 @@ async def _upload_vote_logic(voter_id: str, vote_str: str, config_path: str):
     end_time = time.time()
     print(f"Vote encrypted in {end_time - start_time:.2f} seconds")
 
-    actual_vote = decrypt_float_list(additive_key, vote_shares)
-    print(f"Actual vote: {actual_vote}")
+    # actual_vote = decrypt_float_list(additive_key, vote_shares)
+    # print(f"Actual vote: {actual_vote}")
 
     # Debug: Upload preview
     print("\nDebug: Uploading to nodes:")
@@ -61,7 +61,7 @@ async def _upload_vote_logic(voter_id: str, vote_str: str, config_path: str):
     end_time = time.time()
     print(f"Vote uploaded in {end_time - start_time:.2f} seconds")
 
-    return f"Vote for voter '{voter_id}' uploaded successfully."
+    return f"Vote for voter {voter_id} uploaded successfully."
 
 # CLI entry point
 if __name__ == "__main__":

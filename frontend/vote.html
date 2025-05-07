@@ -118,7 +118,7 @@
       background-color: rgba(255, 255, 255, 0.05);
       padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
       margin-bottom: 20px;
       color: white;
     }
@@ -302,10 +302,15 @@
         return;
       }
       const voter = document.getElementById("voter").value;
-        const checkboxes = document.querySelectorAll('input[name="slot"]');
-        const choices = [];
+      if (!voter || voter.trim() === "") {
+        document.getElementById("output").innerText = "Please enter a valid Voter ID.";
+        return;
+      }
 
-        checkboxes.forEach(cb => choices.push(cb.checked ? "1" : "0"));
+      const checkboxes = document.querySelectorAll('input[name="slot"]');
+      const choices = [];
+
+      checkboxes.forEach(cb => choices.push(cb.checked ? "1" : "0"));
 
         if (!choices.includes("1")) {
           document.getElementById("output").innerText = "Please choose an option before submitting.";
