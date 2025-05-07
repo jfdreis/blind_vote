@@ -12,7 +12,7 @@
       padding: 0;
       min-height: 100vh;
     }
-  
+
     h1, h2 {
       text-align: center;
       color: white;
@@ -189,7 +189,7 @@
     <h1>Voting Manager</h1>
     <div id="voting-setup">
       <p>What is your vote about?</p>
-      <input id="voting-title" class="wide-input" type="text" placeholder="E.g. What is your favourite drink?"><br><br>
+      <input id="voting-title" class="wide-input" type="text" placeholder="E.g. What do you want to drink?"><br><br>
 
       <p>How many options are there?</p>
       <input id="slots" class="wide-input" placeholder="Enter number of options (e.g., 3)" type="number" min="1"><br><br>
@@ -200,9 +200,6 @@
     <div id="slot-inputs" style="display:none;">
       <div id="slot-names"></div>
     </div>
-
-    <!-- Restart Setup button (hidden initially) -->
-    <!-- <button id="restart-initialization-button" style="display: none;" onclick="restartInitialization()">Restart Setup</button><br><br> -->
 
     <pre id="output"></pre>
 
@@ -272,10 +269,6 @@
         votingSection.appendChild(document.createElement("br"));
       }
 
-      // Show the Restart Initialization button after initialization
-      // document.getElementById("restart-initialization-button").style.display = "inline-block";
-
-
       // Confirm button
       const buttonRow = document.createElement("div");
       buttonRow.className = "button-row";
@@ -301,7 +294,7 @@
 
           // Prepare a summary section before the voting link
           const summary = document.createElement("div");
-          summary.id = "voting-summary";  // Add this line
+          summary.id = "voting-summary";
           summary.innerHTML = `
             <h2>Voting Setup Complete</h2>
             <p><strong>Question:</strong> ${question}</p>
@@ -332,7 +325,7 @@
       votingSection.appendChild(buttonRow);
     }
 
-    // Function to restart the initialization process
+    // Function to restart the setup process
     function restartInitialization() {
       // Reset the displayed content and hide slot inputs
       document.getElementById("voting-setup").style.display = "block";
@@ -389,9 +382,6 @@
       // Hide the Finish Voting button
       document.querySelector("button[onclick='finishVoting()']").style.display = "none";
 
-      // Show the Get Results button
-      // document.getElementById("get-results-btn").style.display = "inline-block";
-
       // Disable voting on the voting page
       fetch(`${api}/vote-finish/${sessionId}`, {
         method: "POST",
@@ -409,10 +399,10 @@
         msg.innerText = "Voting is over. You can now view the results.";
         msg.style.color = "red";
         msg.style.marginTop = "10px";
-        document.getElementById("voting-over-message").style.display = "inline"; // Show message
+        document.getElementById("voting-over-message").style.display = "inline";
 
         // Fetch and display results immediately after voting finishes
-        getResults(); // Get and display the results
+        getResults();
       })
       .catch(error => {
         console.error("Error finishing voting:", error);

@@ -6,7 +6,7 @@ import json
 import sys
 import os
 
-# Add root project path to sys.path
+# root project path to sys.path
 sys.path.append(str(Path(__file__).parent.parent))
 
 from examples.init_schema import run_init_schema
@@ -87,7 +87,7 @@ def get_vote_question(session_id):
         return jsonify(message="Session not found."), 404
     return jsonify(question=session.get("question", "Secret Voting"))
 
-# Return vote optionsthe list of options and their current vote counts
+# Return vote options, the list of options and their current vote counts
 @app.route("/vote-options/<session_id>", methods=["GET"])
 def get_vote_options(session_id):
     try:
@@ -115,7 +115,7 @@ def get_results(session_id):
         print(f"Error retrieving results from nilDB: {e}")
         return jsonify(message="Failed to retrieve results."), 500
 
-# Get total vote count from nilDB
+# Get total vote count
 @app.route("/vote-count/<session_id>", methods=["GET"])
 def vote_count(session_id):
     if session_id not in sessions:
@@ -129,16 +129,16 @@ def vote_count(session_id):
         print(f"Error retrieving vote count: {e}")
         return jsonify(message="Failed to retrieve vote count."), 500
 
-# 🔥 Add this new route to finish voting
+# Route to finish voting
 @app.route("/vote-finish/<session_id>", methods=["POST"])
 def finish_voting(session_id):
     session = sessions.get(session_id)
     if not session:
         return jsonify(message="Session not found."), 404
-    session["voting_open"] = False  # 🔥 NEW: Mark voting as finished
+    session["voting_open"] = False  # Mark voting as finished
     return jsonify(message="Voting has been finished.")
 
-# 🔥 Add this new route to check if voting is still open
+# Route to check if voting is still open
 @app.route("/voting-status/<session_id>", methods=["GET"])
 def voting_status(session_id):
     session = sessions.get(session_id)

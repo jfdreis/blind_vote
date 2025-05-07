@@ -234,7 +234,7 @@
             checkbox.type = "checkbox";
             checkbox.name = "slot";
             checkbox.value = index;
-            checkbox.disabled = !votingOpen; //Disable if voting closed
+            checkbox.disabled = !votingOpen;
             checkbox.addEventListener("change", (e) => {
               if (e.target.checked) {
                 document.querySelectorAll('input[name="slot"]').forEach(cb => {
@@ -274,6 +274,8 @@
 
             document.getElementById('voting-section').style.display = 'none';
             document.getElementById('results-section').style.display = 'block';
+
+            document.getElementById("output").innerText = "";
 
             getResults();
           }
@@ -354,7 +356,7 @@
           chartInstance = new Chart(ctx, {
               type: "bar",
             data: {
-                labels: labels, // Use the keys (slot names) as labels
+                labels: labels, // Use the slot names as labels
               datasets: [{
                   label: "Number of Votes", // The label for the chart
                   data: values, // Use the values (vote counts) as data
@@ -367,7 +369,7 @@
               scales: {
                   y: {
                     beginAtZero: true, // Ensure the y-axis starts at 0
-                    precision: 0 // Remove decimal precision
+                    precision: 0
                   }
               }
             }

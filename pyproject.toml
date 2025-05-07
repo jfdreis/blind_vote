@@ -1,11 +1,9 @@
 [project]
-name = "nilrag"
+name = "blind_vote"
 version = "0.1.11"
-description = "nilRAG SDK"
+description = "blind Vote"
 authors = [
-    { name = "Manuel Santos", email = "manuel.santos@nillion.com" },
-    { name = "Dimitris Mouris", email = "dimitris@nillion.com" },
-    { name = "Georgios Pentafragkas", email = "georgios.pentafragkas@nillion.com" }
+    { name = "José Reis", email = "jose.reis@nillion.com" },
 ]
 readme = "README.md"
 requires-python = ">=3.11"
